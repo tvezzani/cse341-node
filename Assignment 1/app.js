@@ -24,8 +24,9 @@ const server = http.createServer((req, res) => {
             //Logging the data to the console
             console.log("Username: ", username);
         });
-
-        return res.end();
+        res.statusCode = 302;
+        res.setHeader('Location', '/');
+        res.end();
     }
 
     if (url === '/users') {
