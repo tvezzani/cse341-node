@@ -3,6 +3,12 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
+
+const MONGODB_URL = process.env.MONGODB_URL || "mongodb+srv://tvezzani:kczttnmbPE3G5zhA@cse341cluster-3dwlw.mongodb.net/test?retryWrites=true&w=majority";
+const options = {
+  family: 4
+}; 
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
@@ -34,23 +40,29 @@ app.use(errorController.get404);
 
 mongoose
   .connect(
-    'mongodb+srv://tvezzani:kczttnmbPE3G5zhA@cluster0-ntrwp.mongodb.net/shop?retryWrites=true'
+    MONGODB_URL, options
   )
   .then(result => {
     User.findOne().then(user => {
       if (!user) {
         const user = new User({
-          name: 'Tim',
+          name: 'Timothy',
           email: 'tvezzani@gmail.com',
           cart: {
             items: []
           }
         });
         user.save();
-      }
+      }    
     });
-    app.listen(3000);
+    app.listen(PORT);
   })
   .catch(err => {
     console.log(err);
   });
+
+const corsOptions = {
+    origin: "https://tvezzani-store.herokuapp.com/",
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
