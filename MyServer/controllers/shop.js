@@ -2,11 +2,7 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 
 exports.getProducts = (req, res, next) => {
-<<<<<<< HEAD
-  Product.fetchAll()
-=======
   Product.find()
->>>>>>> 0dbb3c830334e8b44155375fde73d723fc546dd9
     .then(products => {
       console.log(products);
       res.render('shop/product-list', {
@@ -34,11 +30,7 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-<<<<<<< HEAD
-  Product.fetchAll()
-=======
   Product.find()
->>>>>>> 0dbb3c830334e8b44155375fde73d723fc546dd9
     .then(products => {
       res.render('shop/index', {
         prods: products,
@@ -53,15 +45,10 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-<<<<<<< HEAD
-    .getCart()
-    .then(products => {
-=======
     .populate('cart.items.productId')
     .execPopulate()
     .then(user => {
       const products = user.cart.items;
->>>>>>> 0dbb3c830334e8b44155375fde73d723fc546dd9
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
@@ -86,11 +73,7 @@ exports.postCart = (req, res, next) => {
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   req.user
-<<<<<<< HEAD
-    .deleteItemFromCart(prodId)
-=======
     .removeFromCart(prodId)
->>>>>>> 0dbb3c830334e8b44155375fde73d723fc546dd9
     .then(result => {
       res.redirect('/cart');
     })
@@ -99,10 +82,6 @@ exports.postCartDeleteProduct = (req, res, next) => {
 
 exports.postOrder = (req, res, next) => {
   req.user
-<<<<<<< HEAD
-    .addOrder()
-    .then(result => {
-=======
     .populate('cart.items.productId')
     .execPopulate()
     .then(user => {
@@ -122,19 +101,13 @@ exports.postOrder = (req, res, next) => {
       return req.user.clearCart();
     })
     .then(() => {
->>>>>>> 0dbb3c830334e8b44155375fde73d723fc546dd9
       res.redirect('/orders');
     })
     .catch(err => console.log(err));
 };
 
 exports.getOrders = (req, res, next) => {
-<<<<<<< HEAD
-  req.user
-    .getOrders()
-=======
   Order.find({ 'user.userId': req.user._id })
->>>>>>> 0dbb3c830334e8b44155375fde73d723fc546dd9
     .then(orders => {
       res.render('shop/orders', {
         path: '/orders',
