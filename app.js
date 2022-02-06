@@ -3,10 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
-const csrf = require('csurf');
-const flash = require('connect-flash');
+const PORT = process.env.PORT || 3000;
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
@@ -42,10 +39,7 @@ app.use(csrfProtection);
 app.use(flash());
 
 app.use((req, res, next) => {
-  if (!req.session.user) {
-    return next();
-  }
-  User.findById(req.session.user._id)
+  User.findById('5bab316ce0a7c75f783cb8a8')
     .then(user => {
       req.user = user;
       next();
@@ -66,9 +60,23 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(
+    'mongodb+srv://tvezzani:admin@cluster0.cubsi.mongodb.net/shop'
+  )
   .then(result => {
-    app.listen(3000);
+    User.findOne().then(user => {
+      if (!user) {
+        const user = new User({
+          name: 'Tim',
+          email: 'tvezzani@gmail.com',
+          cart: {
+            items: []
+          }
+        });
+        user.save();
+      }
+    });
+    app.listen(PORT);
   })
   .catch(err => {
     console.log(err);
