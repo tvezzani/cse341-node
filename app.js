@@ -3,13 +3,16 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const PORT = process.env.PORT || 3000;
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
+const flash = require('connect-flash');
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
-  'mongodb+srv://tvezzani:admin@cluster0.cubsi.mongodb.net/shop';
+  'mongodb+srv://tvezzani:admin@cluster0-ntrwp.mongodb.net/shop';
 
 const app = express();
 const store = new MongoDBStore({
@@ -39,7 +42,10 @@ app.use(csrfProtection);
 app.use(flash());
 
 app.use((req, res, next) => {
-  User.findById('5bab316ce0a7c75f783cb8a8')
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
     .then(user => {
       req.user = user;
       next();
@@ -60,23 +66,9 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(
-    'mongodb+srv://tvezzani:admin@cluster0.cubsi.mongodb.net/shop'
-  )
+  .connect(MONGODB_URI)
   .then(result => {
-    User.findOne().then(user => {
-      if (!user) {
-        const user = new User({
-          name: 'Tim',
-          email: 'tvezzani@gmail.com',
-          cart: {
-            items: []
-          }
-        });
-        user.save();
-      }
-    });
-    app.listen(PORT);
+    app.listen(3000);
   })
   .catch(err => {
     console.log(err);
