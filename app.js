@@ -11,12 +11,31 @@ const flash = require('connect-flash');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
-const MONGODB_URI =
-  'mongodb+srv://tvezzani:admin@cluster0-ntrwp.mongodb.net/shop';
-
 const app = express();
+
+//Heroku configuration----
+
+const PORT = process.env.PORT || 3000;
+
+const cors = require('cors');
+
+const corsOptions = {
+  origin: "https://tvezzani-store.herokuapp.com/",
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+
+const options = {
+  family: 4
+}
+
+const MONGODB_URL = process.env.MONGODB_URL || 'mongodb+srv://tvezzani:admin@cluster0.cubsi.mongodb.net/shop?retryWrites=true&w=majority';
+
+//End of configurations----
+
 const store = new MongoDBStore({
-  uri: MONGODB_URI,
+  uri: MONGODB_URL,
   collection: 'sessions'
 });
 const csrfProtection = csrf();
@@ -66,9 +85,12 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(
+    MONGODB_URL, options
+    )
+
   .then(result => {
-    app.listen(3000);
+    app.listen(PORT);
   })
   .catch(err => {
     console.log(err);
