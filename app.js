@@ -37,7 +37,7 @@ mongoose
     'mongodb+srv://tvezzani:admin@cluster0.cubsi.mongodb.net/test'
   )
   .then(result => {
-    app.listen(3000);
+    app.listen(PORT);
   })
   .catch(err => {
     console.log(err);
