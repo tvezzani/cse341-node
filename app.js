@@ -3,7 +3,13 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+
+// -- Needed for heroku --//
+
 require('dotenv').config();
+const port = process.env.PORT || 3000;
+
+// -- Always add this above block -- //
 
 const errorController = require('./controllers/error');
 // const User = require('./models/user');
@@ -35,10 +41,11 @@ app.use(errorController.get404);
 
 mongoose
   .connect(
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cubsi.mongodb.net/shop`
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cubsi.mongodb.net/shop`,
+    { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(result => {
-    app.listen(3000);
+    app.listen(port);
   })
   .catch(err => {
     console.log(err);
