@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 const errorController = require('./controllers/error');
 // const User = require('./models/user');
@@ -34,10 +35,10 @@ app.use(errorController.get404);
 
 mongoose
   .connect(
-    'mongodb+srv://tvezzani:admin@cluster0.cubsi.mongodb.net/test'
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cubsi.mongodb.net/shop`
   )
   .then(result => {
-    app.listen(PORT);
+    app.listen(3000);
   })
   .catch(err => {
     console.log(err);
