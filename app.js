@@ -5,10 +5,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 // -- Needed for heroku --//
-
 require('dotenv').config();
 const port = process.env.PORT || 3000;
-
 // -- Always add this above block -- //
 
 const errorController = require('./controllers/error');
@@ -39,6 +37,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
+//Use this mongoose connect every time -- //
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cubsi.mongodb.net/shop`,
@@ -50,3 +49,4 @@ mongoose
   .catch(err => {
     console.log(err);
   });
+//Add the above block every time -- //
